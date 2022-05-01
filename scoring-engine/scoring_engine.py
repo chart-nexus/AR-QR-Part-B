@@ -24,11 +24,14 @@ class ScoringEngine:
     def score_folder(self, folder):
         results = []
         for file in os.listdir(folder):
+            if not file.endswith("txt"):
+                continue
+            print(f"scoring file {file}")
             results.append(self.score_file(os.path.join(os.path.abspath(folder), file)))
         return results
 
     def score_file(self, file):
-        with open(file) as f:
+        with open(file, encoding='utf-8') as f:
             txt = f.read().lower()
             page = self.page_extractor.extract_page_number(file)
             return self.score_txt(txt, page)
