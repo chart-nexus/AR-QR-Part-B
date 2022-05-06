@@ -1,6 +1,10 @@
-import {Button, Space, Table} from "antd";
+import {Button, Modal, Space, Table} from "antd";
+import {useState} from "react";
+import {UpdatePdfResultView} from "./UpdatePdfResultView";
 
 export const DashboardView = () => {
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const dataSource = [
         {
@@ -49,8 +53,8 @@ export const DashboardView = () => {
                 return (
                     <>
                         <Space>
-                            <Button type="link">View PDF</Button>
-                            <Button type="link">Update</Button>
+                            <Button type="link" onClick={() => window.open("pdf", "_blank")}>View PDF</Button>
+                            <Button type="link" onClick={() => setIsModalVisible(true)}>Update</Button>
                         </Space>
                     </>
                 )
@@ -64,6 +68,10 @@ export const DashboardView = () => {
                 <Button type={"primary"}>Primary</Button>
                 <Table dataSource={dataSource} columns={columns} />
             </Space>
+
+            <Modal title="Update" visible={isModalVisible} onOk={() => setIsModalVisible(false)} onCancel={() => setIsModalVisible(false)} footer={null}>
+                <UpdatePdfResultView />
+            </Modal>
         </>
     );
 };
