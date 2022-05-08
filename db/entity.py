@@ -24,3 +24,19 @@ class Page(Base):
     done_by = Column(String)
     file_path = Column(String)
     status = Column(String)
+
+
+class Config(Base):
+    __tablename__ = "sheet_config"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    sheet_name = Column(String)
+    threshold = Column(Integer)
+
+
+class Keyword(Base):
+    __tablename__ = "keyword"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    sheet_config_id = Column(Integer)
+    score = Column(Integer)

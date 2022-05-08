@@ -22,3 +22,18 @@ create table page
     status      varchar(255)  null
 );
 
+create table keyword
+(
+    id              int auto_increment
+        primary key,
+    sheet_config_id int null,
+    score           int default 0 null
+);
+
+create table sheet_config
+(
+    id         int auto_increment
+        primary key,
+    sheet_name varchar(255) null,
+    threshold  int          null
+);
