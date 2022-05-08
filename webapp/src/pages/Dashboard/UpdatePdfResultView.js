@@ -29,12 +29,6 @@ export const UpdatePdfResultView = () => {
                     }
                 </Select>
             </Form.Item>
-            <Form.Item label="Orientation">
-                <Select onChange={() => {}}>
-                    <Option value="HORIZONTAL">HORIZONTAL</Option>
-                    <Option value="VERTICAL">VERTICAL</Option>
-                </Select>
-            </Form.Item>
             <div style={{ textAlign: 'center' }}>
                 <Button type="primary">Update</Button>
             </div>
