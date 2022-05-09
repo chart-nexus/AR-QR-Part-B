@@ -4,7 +4,10 @@ const { Option } = Select;
 
 export const UpdatePdfResultView = () => {
     return (
-        <Form>
+        <Form
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
+        >
             <Form.Item label="Type">
                 <Select onChange={() => {}}>
                     <Option value="CASH_STATEMENT">CASH STATEMENT</Option>
