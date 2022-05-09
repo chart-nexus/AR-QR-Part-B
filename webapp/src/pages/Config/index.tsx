@@ -4,10 +4,11 @@ import {CreateEditForm} from "./CreateEditForm";
 
 export const ConfigView = () => {
 
-    const [selectedRecord, setSelectedRecord] = useState({});
+    const [selectedRecord, setSelectedRecord] = useState<{ keyword: string, score: number }>();
     const [modalVisible, setModalVisible] = useState({
         create: false,
-        edit: false
+        edit: false,
+        delete: false
     });
 
     const dataSource = [
@@ -39,7 +40,10 @@ export const ConfigView = () => {
                             setSelectedRecord(record);
                             setModalVisible({...modalVisible, edit: true});
                         }}>Edit</Button>
-                        <Button type={"link"}>Delete</Button>
+                        <Button type={"link"} onClick={() => {
+                            setSelectedRecord(record);
+                            setModalVisible({...modalVisible, delete: true});
+                        }}>Delete</Button>
                     </Space>
                 )
             }
@@ -90,6 +94,19 @@ export const ConfigView = () => {
                 footer={null}
             >
                 <CreateEditForm selectedRecord={selectedRecord} />
+            </Modal>
+
+            <Modal
+                title="Delete Modal"
+                visible={modalVisible.delete}
+                onOk={() => setModalVisible({ ...modalVisible, delete: false})}
+                onCancel={() => setModalVisible({ ...modalVisible, delete: false})}
+                footer={null}
+            >
+                <Space direction={"vertical"}>
+                    <p>Are you sure want to delete {selectedRecord?.keyword}?</p>
+                    <Button type={"default"} onClick={() => console.log("DELETE KEYWORD")}>Yes</Button>
+                </Space>
             </Modal>
         </>
     )
