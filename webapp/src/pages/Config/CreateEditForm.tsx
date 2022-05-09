@@ -3,45 +3,60 @@ import {Button, Checkbox, Form, Input} from "antd";
 
 export const CreateEditForm = ({ selectedRecord }: { selectedRecord: any }) => {
 
+    const [form] = Form.useForm();
+
+    const onFinish = () => {
+        form.validateFields().then(values => {
+            if (selectedRecord) {
+                // TODO: Update keyword and score
+
+            } else {
+                // TODO: Add keyword and score
+
+            }
+            form.resetFields()
+        })
+    }
+
     useEffect(() => {
-        console.log(selectedRecord)
+        if (selectedRecord) {
+            form.setFieldsValue({
+                keyword: selectedRecord.keyword,
+                score: selectedRecord.score,
+            })
+        }
     }, [selectedRecord])
 
     return (
         <>
             <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                initialValues={{ remember: true }}
-                onFinish={() => console.log("ON FINISH")}
+                form={form}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 19 }}
+                onFinish={onFinish}
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    label="Keyword"
+                    name="keyword"
+                    rules={[{ required: true, message: 'Please input keyword!' }]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    label="Score"
+                    name="score"
+                    rules={[{ required: true, message: 'Please input score!' }]}
                 >
-                    <Input.Password />
+                    <Input type={"number"} />
                 </Form.Item>
 
-                <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
-                    <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <div style={{ textAlign: 'center' }}>
                     <Button type="primary" htmlType="submit">
                         Submit
                     </Button>
-                </Form.Item>
+                </div>
             </Form>
         </>
     )

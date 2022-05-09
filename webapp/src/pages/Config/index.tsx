@@ -54,7 +54,7 @@ export const ConfigView = () => {
                     wrapperCol={{ span: 22 }}
                 >
                     <Form.Item label={"Select Sheet"} name={"sheetType"}>
-                        <Select defaultValue="lucy" style={{ width: 120 }} onChange={(value) => console.log(value)}>
+                        <Select defaultValue="CASH_STATEMENT" style={{ width: '100%' }} onChange={(value) => console.log(value)}>
                             <Select.Option value="CASH_STATEMENT">Cash Statement</Select.Option>
                             <Select.Option value="BALANCE_SHEET">Balance Sheet</Select.Option>
                         </Select>
@@ -67,6 +67,8 @@ export const ConfigView = () => {
                     </Form.Item>
                 </Form>
 
+                <Button type={"primary"} onClick={() => setModalVisible({ ...modalVisible, create: true })} >Add keyword</Button>
+
                 <Table dataSource={dataSource} columns={columns} />
             </Space>
 
@@ -75,10 +77,9 @@ export const ConfigView = () => {
                 visible={modalVisible.create}
                 onOk={() => setModalVisible({ ...modalVisible, create: false})}
                 onCancel={() => setModalVisible({ ...modalVisible, create: false})}
+                footer={null}
             >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <CreateEditForm selectedRecord={selectedRecord} />
             </Modal>
 
             <Modal
