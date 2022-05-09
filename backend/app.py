@@ -1,11 +1,13 @@
+import os
+import sys
 from datetime import datetime
 
 from fastapi import FastAPI, Request
 from jose import JWTError
 from starlette.responses import JSONResponse
 
-from service import decode_token
-from router import login, config
+from .service import decode_token
+from .router import login, config
 
 app = FastAPI()
 
@@ -17,7 +19,6 @@ async def is_authenticated(request: Request, call_next):
     if request.url.path not in SKIP_PATH:
         try:
             jwt = request.headers["Authorization"][7:]
-            print(jwt)
             decoded_token = decode_token(jwt)
             if datetime.utcfromtimestamp(decoded_token["exp"]) <= datetime.utcnow():
                 return JSONResponse(content={"detail": "session timeout"}, status_code=401)

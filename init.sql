@@ -1,4 +1,4 @@
-create table file
+create table if not exists file
 (
     id              bigint unsigned auto_increment
         primary key,
@@ -8,7 +8,7 @@ create table file
         unique (id)
 );
 
-create table page
+create table if not exists page
 (
     id          int auto_increment
         primary key,
@@ -22,7 +22,7 @@ create table page
     status      varchar(255)  null
 );
 
-create table keyword
+create table if not exists keyword
 (
     id              int auto_increment
         primary key,
@@ -30,10 +30,25 @@ create table keyword
     score           int default 0 null
 );
 
-create table sheet_config
+create table if not exists sheet_config
 (
     id         int auto_increment
         primary key,
     sheet_name varchar(255) null,
     threshold  int          null
 );
+
+insert ignore into sheet_config
+  (id, sheet_name, threshold)
+VALUES
+  (0, "Cash Flow", 100);
+
+insert ignore into sheet_config
+  (id, sheet_name, threshold)
+VALUES
+  (1, "Balance Sheet", 100);
+
+insert ignore into sheet_config
+  (id, sheet_name, threshold)
+VALUES
+  (2, "Income Statement", 100);

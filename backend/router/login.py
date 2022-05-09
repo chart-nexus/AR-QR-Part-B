@@ -3,8 +3,8 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException
 from jose import JWTError
 
-from model import Jwt, Login, Refresh
-from service import create_access_token, create_refresh_token, decode_token
+from backend.model import Jwt, Login, Refresh
+from backend.service import create_access_token, create_refresh_token, decode_token
 
 router = APIRouter(
     prefix="/login"

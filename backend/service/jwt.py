@@ -9,11 +9,11 @@ REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 1 week
 
 
 def create_refresh_token():
-    return create_token({}, timedelta(REFRESH_TOKEN_EXPIRE_MINUTES))
+    return create_token({}, timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
 
 
 def create_access_token():
-    return create_token({}, timedelta(ACCESS_TOKEN_EXPIRE_MINUTES))
+    return create_token({}, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
 
 def create_token(data: dict, expires_delta: timedelta):

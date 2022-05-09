@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -32,11 +32,14 @@ class Config(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     sheet_name = Column(String)
     threshold = Column(Integer)
+    keywords = relationship("Keyword", back_populates="config")
 
 
 class Keyword(Base):
     __tablename__ = "keyword"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    sheet_config_id = Column(Integer)
+    sheet_config_id = Column(Integer, ForeignKey("sheet_config.id"))
+    word = Column(String)
     score = Column(Integer)
+    config = relationship("Config", back_populates="keywords")
