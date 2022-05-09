@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 
 class Keyword(BaseModel):
-    id: int
+    id: Optional[int]
     word: str
     score: int
 
@@ -12,10 +12,17 @@ class Keyword(BaseModel):
         orm_mode = True
 
 
-class Config(BaseModel):
-    id: int
+class KeywordCreate(Keyword):
+    sheet_config_id: int
+
+
+class ConfigBase(BaseModel):
+    id: Optional[int]
     sheet_name: str
     threshold: int
+
+
+class Config(ConfigBase):
     keywords: List[Keyword]
 
     class Config:
