@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.orm import Session
 
 from backend.model import ConfigBase, Keyword
@@ -31,4 +33,18 @@ def edit_keyword(db: Session, keyword_id: int, keyword: Keyword):
 
 def delete_keyword(db: Session, keyword_id: int):
     db.query(entity.Keyword).filter_by(id=keyword_id).delete()
+    db.commit()
+
+
+def get_files(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(entity.File).offset(skip).limit(limit).all()
+
+
+def get_file(db: Session, file_id: int):
+    return db.query(entity.File).get(file_id)
+
+
+def update_pages(db: Session, file_id: int, page_list: List[int], sheet_name: str):
+    db.query(entity.Page).filter(entity.Page.file_id == file_id, entity.Page.page.in_(page_list))\
+        .update({"sheet": sheet_name, "done_by": "HUMAN", "status": "PASS"})
     db.commit()

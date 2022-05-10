@@ -7,7 +7,7 @@ from jose import JWTError
 from starlette.responses import JSONResponse
 
 from .service import decode_token
-from .router import login, config, keyword
+from .router import login, config, keyword, file
 
 app = FastAPI()
 
@@ -32,3 +32,4 @@ async def is_authenticated(request: Request, call_next):
 app.include_router(login.router)
 app.include_router(config.router)
 app.include_router(keyword.router)
+app.include_router(file.router)

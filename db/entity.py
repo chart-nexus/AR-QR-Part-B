@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -10,13 +10,16 @@ class File(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     folder_location = Column(String)
     file_path = Column(String)
+    need_verify = Column(Boolean)
+
+    pages = relationship("Page", back_populates="file")
 
 
 class Page(Base):
     __tablename__ = "page"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    file_id = Column(Integer)
+    file_id = Column(Integer, ForeignKey("file.id"))
     page = Column(Integer)
     orientation = Column(Integer)
     score = Column(Integer)
@@ -24,6 +27,8 @@ class Page(Base):
     done_by = Column(String)
     file_path = Column(String)
     status = Column(String)
+
+    file = relationship("File", back_populates="pages")
 
 
 class Config(Base):
