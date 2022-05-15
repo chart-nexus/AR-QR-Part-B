@@ -31,10 +31,10 @@ class Ocr:
     def run(self):
         # save to file db
         session = self.session_maker()
-        file = File(file_path=self.path, folder_location=self.output_folder)
+        images = self.pdf_to_images()
+        file = File(file_path=self.path, folder_location=self.output_folder, page=len(images))
         session.add(file)
         session.flush()
-        images = self.pdf_to_images()
         for idx, image in enumerate(images):
             page = idx + 1
             orientation = self.detect_orientation(image)

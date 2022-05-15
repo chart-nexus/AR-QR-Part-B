@@ -8,8 +8,8 @@ if __name__ == '__main__':
     db = Db("127.0.0.1", 3306, "root", "root", "ocr")
     rabbit = RabbitProvider("localhost", 5672, "scoring")
 
-    file = "/Users/yinchuangsum/ocr/3.pdf"
-    folder = "/Users/yinchuangsum/ocr/output_3"
+    file = "/Users/yinchuangsum/ocr/1.pdf"
+    folder = "/Users/yinchuangsum/ocr/output_1"
 
     print(f"start ocr for file: {file}")
     ocr = Ocr(file, folder, db.engine)

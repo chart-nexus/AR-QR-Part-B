@@ -12,6 +12,7 @@ class File(Base):
     file_path = Column(String)
     need_verify = Column(Boolean)
     scoring_done = Column(Boolean)
+    page = Column(Integer)
 
     pages = relationship("Page", back_populates="file")
 

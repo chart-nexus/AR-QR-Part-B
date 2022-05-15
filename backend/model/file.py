@@ -8,6 +8,7 @@ class File(BaseModel):
     folder_location: str
     file_path: str
     need_verify: bool
+    page: int
 
     class Config:
         orm_mode = True
