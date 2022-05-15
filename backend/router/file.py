@@ -26,3 +26,7 @@ async def get_pdf(file_id: int, db: Session = Depends(get_db)):
 @router.patch("/{file_id}/pages/update")
 async def update_page_sheet(file_id: int, page_sheet_name_patch: PageSheetNamePatch, db: Session = Depends(get_db)):
     crud.update_pages(db, file_id, page_sheet_name_patch.page_list, page_sheet_name_patch.sheet_name)
+
+
+# async def get_success_pages(file_id: int,)
+#     crud.get_successful_pages
