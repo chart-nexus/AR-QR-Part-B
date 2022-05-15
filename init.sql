@@ -6,6 +6,7 @@ create table file
     file_path       varchar(255)         null,
     need_verify     tinyint(1) default 1 null,
     scoring_done    tinyint(1) default 0 null,
+    page            int        default 0 null,
     constraint file_id_uindex
         unique (id),
     constraint id
