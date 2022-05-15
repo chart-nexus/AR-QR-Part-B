@@ -20,6 +20,7 @@ class ScoringEngine:
     def __init__(self, configs, page_extractor):
         self.configs = configs
         self.page_extractor = page_extractor
+        self.config_result = {}
 
     def score_folder(self, folder):
         results = []
@@ -28,7 +29,10 @@ class ScoringEngine:
                 continue
             print(f"scoring file {file}")
             results.append(self.score_file(os.path.join(os.path.abspath(folder), file)))
-        return results
+
+        if len(self.configs) == len(self.config_result):
+            return results
+        return []
 
     def score_file(self, file):
         with open(file, encoding='utf-8') as f:
@@ -50,6 +54,9 @@ class ScoringEngine:
             elif new_score > score:
                 score = new_score
                 sheet = config.sheet_name
+
+        if status == "PASS":
+            self.config_result[sheet] = True
 
         return ScoreEngineResult(page, score, sheet, status)
 

@@ -37,14 +37,18 @@ def delete_keyword(db: Session, keyword_id: int):
 
 
 def get_files(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(entity.File).offset(skip).limit(limit).all()
+    return db.query(entity.File).filter_by(scoring_done=True).offset(skip).limit(limit).all()
 
 
 def get_file(db: Session, file_id: int):
     return db.query(entity.File).get(file_id)
 
 
+def get_pages_by_config(db: Session, file_id: int, config_name: str):
+    return db.query(entity.Page).filter_by(file_id=file_id, sheet=config_name).all()
+
+
 def update_pages(db: Session, file_id: int, page_list: List[int], sheet_name: str):
-    db.query(entity.Page).filter(entity.Page.file_id == file_id, entity.Page.page.in_(page_list))\
+    db.query(entity.Page).filter(entity.Page.file_id == file_id, entity.Page.page.in_(page_list)) \
         .update({"sheet": sheet_name, "done_by": "HUMAN", "status": "PASS"})
     db.commit()

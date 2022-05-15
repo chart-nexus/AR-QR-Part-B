@@ -11,6 +11,15 @@ from db import File, Page
 def file_as_dict(file):
     return {"id": file.id, "folder_location": file.folder_location, "file_path": file.file_path}
 
+
+def image_to_txt(image):
+    return pytesseract.image_to_string(image)
+
+
+def rotate_image(image, angle):
+    return image.rotate(360 - angle, expand=1)
+
+
 class Ocr:
     def __init__(self, path, output_folder, engine):
         self.path = path
@@ -29,8 +38,8 @@ class Ocr:
         for idx, image in enumerate(images):
             page = idx + 1
             orientation = self.detect_orientation(image)
-            image = self.rotate_image(image, orientation)
-            txt = self.image_to_txt(image)
+            image = rotate_image(image, orientation)
+            txt = image_to_txt(image)
             file_path = self.save_file(txt, page)
             # save to page db
             page_object = Page(file_id=file.id, page=page, orientation=orientation, file_path=file_path)
@@ -47,16 +56,10 @@ class Ocr:
     def save_image_to_tmp(self, image):
         return Image.save(image, self.tmp_file)
 
-    def image_to_txt(self, image):
-        return pytesseract.image_to_string(image)
-
     def detect_orientation(self, image):
         self.save_image_to_tmp(image)
         data = pytesseract.image_to_osd(self.tmp_file, output_type=Output.DICT)
         return data["rotate"]
-
-    def rotate_image(self, image, angle):
-        return image.rotate(360 - angle, expand=1)
 
     def save_file(self, txt, page):
         file_name = f"{page}.txt"

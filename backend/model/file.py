@@ -13,6 +13,14 @@ class File(BaseModel):
         orm_mode = True
 
 
+class Page(BaseModel):
+    page: int
+    score: int
+
+    class Config:
+        orm_mode = True
+
+
 class PageSheetNamePatch(BaseModel):
     page_list: List[int]
     sheet_name: str

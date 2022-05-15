@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 
 from config import *
-from db import Db, Page
+from db import Db, Page, File
 from rabbitmq import RabbitConsumer
 from scoring_engine import *
 
@@ -11,8 +11,8 @@ if __name__ == '__main__':
     session_maker = sessionmaker()
     session_maker.configure(bind=db.engine)
 
-    configLoader = FileConfigLoader()
-    configs = configLoader.load("config.json")
+    configLoader = DbConfigLoader(db.engine)
+    configs = configLoader.load()
     scoring_engine = ScoringEngine(configs, PageExtractor())
 
     def callback(ch, method, properties, body):
@@ -30,6 +30,10 @@ if __name__ == '__main__':
             page.done_by = "SYSTEM"
             page.status = result.status
             session.flush()
+        file = session.query(File).filter_by(id=file_id).first()
+        file.need_verify = len(results) == 0
+        file.scoring_done = True
+        session.flush()
         session.commit()
         session.close()
         ch.basic_ack(delivery_tag=method.delivery_tag) # tell queue success

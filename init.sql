@@ -1,14 +1,27 @@
-create table if not exists file
+create table file
 (
     id              bigint unsigned auto_increment
         primary key,
-    folder_location varchar(255) null,
-    file_path       varchar(255) null,
+    folder_location varchar(255)         null,
+    file_path       varchar(255)         null,
+    need_verify     tinyint(1) default 1 null,
+    scoring_done    tinyint(1) default 0 null,
+    constraint file_id_uindex
+        unique (id),
     constraint id
         unique (id)
 );
 
-create table if not exists page
+create table keyword
+(
+    id              int auto_increment
+        primary key,
+    sheet_config_id int          null,
+    score           int          null,
+    word            varchar(255) null
+);
+
+create table page
 (
     id          int auto_increment
         primary key,
@@ -22,21 +35,14 @@ create table if not exists page
     status      varchar(255)  null
 );
 
-create table if not exists keyword
-(
-    id              int auto_increment
-        primary key,
-    sheet_config_id int null,
-    score           int default 0 null
-);
-
-create table if not exists sheet_config
+create table sheet_config
 (
     id         int auto_increment
         primary key,
     sheet_name varchar(255) null,
     threshold  int          null
 );
+
 
 insert ignore into sheet_config
   (id, sheet_name, threshold)
