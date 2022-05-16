@@ -8,6 +8,8 @@ if __name__ == '__main__':
     db = Db("127.0.0.1", 3306, "root", "root", "ocr")
     rabbit = RabbitProvider("localhost", 5672, "scoring")
 
+    # TODO: Listen to queue, and see whether got new pdf come in or not
+
     file = "F:\\chartnexus\\project_dev\\AR-QR-Part-B\\sample\\1.pdf"
     folder = "F:\\chartnexus\\project_dev\\AR-QR-Part-B\\output\\1"
 

@@ -45,13 +45,13 @@ export const ResultView = ({file_id, form, onCloseModal}: PropsType) => {
                                 <Form.Item
                                     label="Sheet Name"
                                 >
-                                    <Input value={result.sheet_name} disabled={true} />
+                                    <Input value={result.sheet_name} />
                                 </Form.Item>
 
                                 <Form.Item
                                     label="Pages List"
                                 >
-                                    <Input value={result.page_list.sort((a: number, b: number) => a - b).join(", ")} disabled={true} />
+                                    <Input value={result.page_list.sort((a: number, b: number) => a - b).join(", ")} />
                                 </Form.Item>
                             </>
                         )
