@@ -17,7 +17,6 @@ export const CreateEditForm = ({ selectedSheet, onCloseModal, selectedKeywordSet
         form.validateFields().then(values => {
             if (selectedSheet) {
                 if (selectedKeywordSet) {
-                    // TODO: PATCH
                     axios.put(`${process.env.REACT_APP_API_URL}/keywords/${selectedKeywordSet.id}`, {
                         word: values.word,
                         score: values.score

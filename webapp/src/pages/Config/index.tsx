@@ -13,7 +13,8 @@ export const ConfigView = () => {
     const [modalVisible, setModalVisible] = useState({
         create: false,
         edit: false,
-        delete: false
+        delete: false,
+        editConfig: false,
     });
 
     const dataSource = [
@@ -153,7 +154,10 @@ export const ConfigView = () => {
                     </Form.Item>
                 </Form>
 
-                <Button type={"primary"} onClick={() => setModalVisible({ ...modalVisible, create: true })} >Add keyword</Button>
+                <Space direction={"horizontal"}>
+                    <Button type={"primary"} onClick={() => setModalVisible({ ...modalVisible, create: true })} >Add keyword</Button>
+                    <Button type={"primary"} onClick={() => setModalVisible({ ...modalVisible, editConfig: true })} >Edit Sheet</Button>
+                </Space>
 
                 {
                     selectedSheet && (
@@ -193,6 +197,19 @@ export const ConfigView = () => {
                     <p>Are you sure want to delete <b>{keywordSet?.word}</b> in <b>{selectedSheet?.sheet_name}</b>?</p>
                     <Button type={"default"} onClick={onDeleteKeyword}>Yes</Button>
                 </Space>
+            </Modal>
+
+            <Modal
+                title="Edit Sheet"
+                visible={modalVisible.editConfig}
+                onOk={() => setModalVisible({ ...modalVisible, editConfig: false})}
+                onCancel={() => setModalVisible({ ...modalVisible, editConfig: false})}
+                footer={null}
+            >
+                {/*<Space direction={"vertical"}>*/}
+                {/*    <p>Are you sure want to delete <b>{keywordSet?.word}</b> in <b>{selectedSheet?.sheet_name}</b>?</p>*/}
+                {/*    <Button type={"default"} onClick={onDeleteKeyword}>Yes</Button>*/}
+                {/*</Space>*/}
             </Modal>
         </>
     )
