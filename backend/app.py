@@ -9,10 +9,11 @@ from starlette.responses import JSONResponse
 
 from .service import decode_token
 from .router import login, config, keyword, file
+from .util.url import match_urls
 
 app = FastAPI()
 
-SKIP_PATH = ("/login", "/login/", "/login/refresh")
+SKIP_PATH = ('/login', '/login/', '/login/refresh', '/files/(\d+)/pdf')
 ORIGINS = [
     "http://localhost:3000"
 ]
@@ -28,7 +29,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def is_authenticated(request: Request, call_next):
-    if request.url.path not in SKIP_PATH:
+    if not match_urls(request.url.path, SKIP_PATH):
         try:
             jwt = request.headers["Authorization"][7:]
             decoded_token = decode_token(jwt)
