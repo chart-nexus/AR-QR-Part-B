@@ -29,6 +29,11 @@ export const MainLayoutView = () => {
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                         <Menu.Item key="1" onClick={() => { navigate("/app/dashboard") }}>Verify</Menu.Item>
                         <Menu.Item key="2" onClick={() => { navigate("/app/config") }}>Config</Menu.Item>
+                        <Menu.Item key="3" onClick={() => {
+                            // localStorage.clear()
+                            // sessionStorage.clear()
+                            navigate("/login")
+                        }}>Log Out</Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout className="site-layout">

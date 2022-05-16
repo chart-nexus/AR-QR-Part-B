@@ -4,7 +4,7 @@ from datetime import datetime
 
 from fastapi import FastAPI, Request
 from jose import JWTError
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
 from .service import decode_token
@@ -14,17 +14,6 @@ from .util.url import match_urls
 app = FastAPI()
 
 SKIP_PATH = ('/login', '/login/', '/login/refresh', '/files/(\d+)/pdf')
-ORIGINS = [
-    "http://localhost:3000"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.middleware("http")
@@ -46,3 +35,11 @@ app.include_router(login.router)
 app.include_router(config.router)
 app.include_router(keyword.router)
 app.include_router(file.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
