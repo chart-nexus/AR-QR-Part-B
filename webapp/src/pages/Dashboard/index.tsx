@@ -64,13 +64,14 @@ export const DashboardView = () => {
 
     return (
         <>
-            <Space style={{ width: '100%' }} direction={"vertical"}>
+            <Space style={{width: '100%'}} direction={"vertical"}>
                 <Button type={"primary"}>Primary</Button>
-                <Table dataSource={dataSource} columns={columns} />
+                <Table dataSource={dataSource} columns={columns}/>
             </Space>
 
-            <Modal title="Update" visible={isModalVisible} onOk={() => setIsModalVisible(false)} onCancel={() => setIsModalVisible(false)} footer={null}>
-                <UpdatePdfResultView />
+            <Modal title="Update" visible={isModalVisible} onOk={() => setIsModalVisible(false)}
+                   onCancel={() => setIsModalVisible(false)} footer={null}>
+                <UpdatePdfResultView/>
             </Modal>
         </>
     );

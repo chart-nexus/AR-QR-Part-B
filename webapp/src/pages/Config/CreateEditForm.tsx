@@ -1,31 +1,64 @@
 import {useEffect} from "react";
-import {Button, Checkbox, Form, Input} from "antd";
+import {Button, Checkbox, Form, Input, notification} from "antd";
+import {Configs, Keywords} from "../../dto/configs.dto";
+import axios from "axios";
 
-export const CreateEditForm = ({ selectedRecord }: { selectedRecord: any }) => {
+type PropsType = {
+    selectedSheet: Configs | undefined;
+    onCloseModal: () => void;
+    selectedKeywordSet: Keywords | null | undefined;
+}
+
+export const CreateEditForm = ({ selectedSheet, onCloseModal, selectedKeywordSet } : PropsType) => {
 
     const [form] = Form.useForm();
 
     const onFinish = () => {
         form.validateFields().then(values => {
-            if (selectedRecord) {
-                // TODO: Update keyword and score
-
+            if (selectedSheet) {
+                axios.post(`${process.env.REACT_APP_API_URL}/keywords`, {
+                    sheet_config_id: selectedSheet.id,
+                    word: values.word,
+                    score: values.score
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+                    .then((res) => {
+                        notification["success"]({
+                            message: 'Success',
+                            description: "Operation Success",
+                        });
+                    })
+                    .catch((error) => {
+                        notification["error"]({
+                            message: 'Error',
+                            description: error?.response?.data?.detail ?? "Something went wrong",
+                        });
+                    })
+                    .finally(() => {
+                        form.resetFields()
+                        onCloseModal()
+                    })
             } else {
-                // TODO: Add keyword and score
-
+                notification["error"]({
+                    message: 'Error',
+                    description: "Form Submit Error",
+                });
             }
-            form.resetFields()
         })
     }
 
     useEffect(() => {
-        if (selectedRecord) {
+        if (selectedKeywordSet) {
             form.setFieldsValue({
-                keyword: selectedRecord.keyword,
-                score: selectedRecord.score,
+                word: selectedKeywordSet.word,
+                score: selectedKeywordSet.score
             })
         }
-    }, [selectedRecord])
+    }, [selectedKeywordSet]);
+
 
     return (
         <>
@@ -38,7 +71,7 @@ export const CreateEditForm = ({ selectedRecord }: { selectedRecord: any }) => {
             >
                 <Form.Item
                     label="Keyword"
-                    name="keyword"
+                    name="word"
                     rules={[{ required: true, message: 'Please input keyword!' }]}
                 >
                     <Input />

@@ -1,10 +1,15 @@
-import {Button, Col, Form, Input, Modal, Row, Select, Space, Table, Typography} from "antd";
-import {useState} from "react";
+import {Button, Form, Input, Modal, notification, Select, Space, Table} from "antd";
+import {useEffect, useState} from "react";
 import {CreateEditForm} from "./CreateEditForm";
+import axios from "axios";
+import {Configs, ConfigsResponseDto, Keywords} from "../../dto/configs.dto";
 
 export const ConfigView = () => {
 
-    const [selectedRecord, setSelectedRecord] = useState<{ keyword: string, score: number }>();
+    const [form] = Form.useForm();
+    const [keywordSet, setKeywordSet] = useState<Keywords>();
+    const [selectedSheet, setSelectedSheet] = useState<Configs>();
+    const [configList, setConfigList] = useState<ConfigsResponseDto>()
     const [modalVisible, setModalVisible] = useState({
         create: false,
         edit: false,
@@ -22,8 +27,8 @@ export const ConfigView = () => {
     const columns = [
         {
             title: 'Keyword',
-            dataIndex: 'keyword',
-            key: 'keyword',
+            dataIndex: 'word',
+            key: 'word',
         },
         {
             title: 'Score',
@@ -33,15 +38,17 @@ export const ConfigView = () => {
         {
             title: 'Action',
             dataIndex: 'action',
-            render: (index: any, record: any) => {
+            render: (index: any, record: Keywords) => {
                 return (
                     <Space direction={"horizontal"}>
                         <Button type={"link"} onClick={() => {
-                            setSelectedRecord(record);
+                            // setSelectedSheet(record);
+                            setKeywordSet(record);
                             setModalVisible({...modalVisible, edit: true});
                         }}>Edit</Button>
                         <Button type={"link"} onClick={() => {
-                            setSelectedRecord(record);
+                            // setSelectedSheet(record);
+                            setKeywordSet(record);
                             setModalVisible({...modalVisible, delete: true});
                         }}>Delete</Button>
                     </Space>
@@ -50,30 +57,146 @@ export const ConfigView = () => {
         }
     ];
 
+    const getConfigList = () => {
+        axios.get(`${process.env.REACT_APP_API_URL}/configs/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+            .then((res) => {
+                setConfigList(res.data)
+                setSelectedSheet(res.data.data[0])
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: 'Error',
+                    description: error?.response?.data?.detail ?? "Something went wrong",
+                });
+            })
+            .finally(() => {
+                setConfigList([
+                    {
+                        "id": 1,
+                        "sheet_name": "Cash Flow",
+                        "threshold": 100,
+                        "keywords": [
+                            {
+                                "id": 1,
+                                "word": "asd",
+                                "score": 1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "sheet_name": "Income Statement",
+                        "threshold": 100,
+                        "keywords": [
+                            {
+                                "id": 1,
+                                "word": "word",
+                                "score": 1
+                            }
+                        ]
+                    }
+                ])
+                setSelectedSheet({
+                    "id": 1,
+                    "sheet_name": "Cash Flow",
+                    "threshold": 100,
+                    "keywords": [
+                        {
+                            "id": 1,
+                            "word": "asd",
+                            "score": 1
+                        }
+                    ]
+                })
+            })
+    }
+
+    const onSheetTypeChange = (value: string) => {
+        setSelectedSheet(configList?.find((item: Configs) => item.sheet_name === value))
+    }
+
+    const onDeleteKeyword = () => {
+        axios.delete(`${process.env.REACT_APP_API_URL}/keywords/${keywordSet?.id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+            .then((res) => {
+                notification["success"]({
+                    message: 'Success',
+                    description: "Operation Success",
+                });
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: 'Error',
+                    description: error?.response?.data?.detail ?? "Something went wrong",
+                });
+            })
+            .finally(() => {
+                setModalVisible({...modalVisible, delete: false})
+                getConfigList()
+            })
+    }
+
+    const onCloseModal = () => {
+        setModalVisible({...modalVisible, create: false, edit: false, delete: false})
+        getConfigList()
+    }
+
+    useEffect(() => {
+        getConfigList()
+    }, []);
+
+    useEffect(() => {
+        if (selectedSheet) {
+            form.setFieldsValue({
+                sheet: selectedSheet.sheet_name,
+                passThreshold: selectedSheet.threshold,
+            })
+        }
+    }, [selectedSheet]);
+
+
+    // @ts-ignore
     return (
         <>
             <Space direction={"vertical"} style={{ width: '100%' }}>
                 <Form
+                    form={form}
                     labelCol={{ span: 2 }}
                     wrapperCol={{ span: 22 }}
                 >
                     <Form.Item label={"Select Sheet"} name={"sheetType"}>
-                        <Select defaultValue="CASH_STATEMENT" style={{ width: '100%' }} onChange={(value) => console.log(value)}>
-                            <Select.Option value="CASH_STATEMENT">Cash Statement</Select.Option>
-                            <Select.Option value="BALANCE_SHEET">Balance Sheet</Select.Option>
+                        <Select style={{ width: '100%' }} onChange={(value) => onSheetTypeChange(value)}>
+                            {
+                                configList?.map((config) => {
+                                    return (
+                                        <Select.Option value={ config.sheet_name }>{ config.sheet_name }</Select.Option>
+                                    )
+                                })
+                            }
                         </Select>
                     </Form.Item>
                     <Form.Item label={"Sheet"} name={"sheet"}>
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item label={"Pass Threshold"} name={"passThreshold"}>
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
                 </Form>
 
                 <Button type={"primary"} onClick={() => setModalVisible({ ...modalVisible, create: true })} >Add keyword</Button>
 
-                <Table dataSource={dataSource} columns={columns} />
+                {
+                    selectedSheet && (
+                        <Table dataSource={selectedSheet?.keywords} columns={columns} />
+                    )
+                }
             </Space>
 
             <Modal
@@ -83,7 +206,7 @@ export const ConfigView = () => {
                 onCancel={() => setModalVisible({ ...modalVisible, create: false})}
                 footer={null}
             >
-                <CreateEditForm selectedRecord={selectedRecord} />
+                <CreateEditForm selectedSheet={selectedSheet} onCloseModal={onCloseModal} selectedKeywordSet={null} />
             </Modal>
 
             <Modal
@@ -93,7 +216,7 @@ export const ConfigView = () => {
                 onCancel={() => setModalVisible({ ...modalVisible, edit: false})}
                 footer={null}
             >
-                <CreateEditForm selectedRecord={selectedRecord} />
+                <CreateEditForm selectedSheet={selectedSheet} onCloseModal={onCloseModal} selectedKeywordSet={keywordSet} />
             </Modal>
 
             <Modal
@@ -104,8 +227,8 @@ export const ConfigView = () => {
                 footer={null}
             >
                 <Space direction={"vertical"}>
-                    <p>Are you sure want to delete {selectedRecord?.keyword}?</p>
-                    <Button type={"default"} onClick={() => console.log("DELETE KEYWORD")}>Yes</Button>
+                    <p>Are you sure want to delete <b>{keywordSet?.word}</b> in <b>{selectedSheet?.sheet_name}</b>?</p>
+                    <Button type={"default"} onClick={onDeleteKeyword}>Yes</Button>
                 </Space>
             </Modal>
         </>
