@@ -65,53 +65,16 @@ export const ConfigView = () => {
         })
             .then((res) => {
                 setConfigList(res.data)
-                setSelectedSheet(res.data.data[0])
+                setSelectedSheet(res.data[0])
+                form.setFieldsValue({
+                    sheetType: res.data[0].sheet_name,
+                })
             })
             .catch((error) => {
                 notification["error"]({
                     message: 'Error',
                     description: error?.response?.data?.detail ?? "Something went wrong",
                 });
-            })
-            .finally(() => {
-                setConfigList([
-                    {
-                        "id": 1,
-                        "sheet_name": "Cash Flow",
-                        "threshold": 100,
-                        "keywords": [
-                            {
-                                "id": 1,
-                                "word": "asd",
-                                "score": 1
-                            }
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "sheet_name": "Income Statement",
-                        "threshold": 100,
-                        "keywords": [
-                            {
-                                "id": 1,
-                                "word": "word",
-                                "score": 1
-                            }
-                        ]
-                    }
-                ])
-                setSelectedSheet({
-                    "id": 1,
-                    "sheet_name": "Cash Flow",
-                    "threshold": 100,
-                    "keywords": [
-                        {
-                            "id": 1,
-                            "word": "asd",
-                            "score": 1
-                        }
-                    ]
-                })
             })
     }
 

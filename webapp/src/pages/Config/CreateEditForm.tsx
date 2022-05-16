@@ -16,31 +16,59 @@ export const CreateEditForm = ({ selectedSheet, onCloseModal, selectedKeywordSet
     const onFinish = () => {
         form.validateFields().then(values => {
             if (selectedSheet) {
-                axios.post(`${process.env.REACT_APP_API_URL}/keywords`, {
-                    sheet_config_id: selectedSheet.id,
-                    word: values.word,
-                    score: values.score
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
-                })
-                    .then((res) => {
-                        notification["success"]({
-                            message: 'Success',
-                            description: "Operation Success",
-                        });
+                if (selectedKeywordSet) {
+                    // TODO: PATCH
+                    axios.put(`${process.env.REACT_APP_API_URL}/keywords/${selectedKeywordSet.id}`, {
+                        word: values.word,
+                        score: values.score
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
                     })
-                    .catch((error) => {
-                        notification["error"]({
-                            message: 'Error',
-                            description: error?.response?.data?.detail ?? "Something went wrong",
-                        });
+                        .then((res) => {
+                            notification["success"]({
+                                message: 'Success',
+                                description: "Operation Success",
+                            });
+                        })
+                        .catch((error) => {
+                            notification["error"]({
+                                message: 'Error',
+                                description: error?.response?.data?.detail ?? "Something went wrong",
+                            });
+                        })
+                        .finally(() => {
+                            form.resetFields()
+                            onCloseModal()
+                        })
+                } else {
+                    axios.post(`${process.env.REACT_APP_API_URL}/keywords`, {
+                        sheet_config_id: selectedSheet.id,
+                        word: values.word,
+                        score: values.score
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
                     })
-                    .finally(() => {
-                        form.resetFields()
-                        onCloseModal()
-                    })
+                        .then((res) => {
+                            notification["success"]({
+                                message: 'Success',
+                                description: "Operation Success",
+                            });
+                        })
+                        .catch((error) => {
+                            notification["error"]({
+                                message: 'Error',
+                                description: error?.response?.data?.detail ?? "Something went wrong",
+                            });
+                        })
+                        .finally(() => {
+                            form.resetFields()
+                            onCloseModal()
+                        })
+                }
             } else {
                 notification["error"]({
                     message: 'Error',
