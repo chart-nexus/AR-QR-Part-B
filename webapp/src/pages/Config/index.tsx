@@ -18,14 +18,6 @@ export const ConfigView = () => {
         editConfig: false,
     });
 
-    const dataSource = [
-        {
-            key: '1',
-            keyword: 'Mike',
-            score: 32
-        }
-    ];
-
     const columns = [
         {
             title: 'Keyword',
