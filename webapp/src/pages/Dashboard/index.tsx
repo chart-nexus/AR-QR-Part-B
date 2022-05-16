@@ -1,13 +1,16 @@
-import {Button, Modal, notification, Space, Table} from "antd";
+import {Button, Form, Modal, notification, Space, Table} from "antd";
 import {useEffect, useState} from "react";
 import {UpdatePdfResultView} from "./UpdatePdfResultView";
 import axios from "axios";
 import {File, FilesResponseDto} from "../../dto/files.dto";
+import {ResultView} from "./ResultView";
 
 export const DashboardView = () => {
 
+    const [resultForm] = Form.useForm();
     const [fileDataSource, setFileDataSource] = useState<FilesResponseDto>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalResultVisible, setIsModalResultVisible] = useState(false);
     const [selectedFileRecord, setSelectedFileRecord] = useState<File>();
 
     const columns = [
@@ -47,6 +50,10 @@ export const DashboardView = () => {
                                 setSelectedFileRecord(record);
                                 setIsModalVisible(true)
                             }}>Update</Button>
+                            <Button type="link" onClick={() => {
+                                setSelectedFileRecord(record);
+                                setIsModalResultVisible(true)
+                            }}>Result</Button>
                         </Space>
                     </>
                 )
@@ -76,6 +83,11 @@ export const DashboardView = () => {
             })
     }
 
+    const onCloseResultModal = () => {
+        setIsModalResultVisible(false);
+        resultForm.resetFields();
+    }
+
     useEffect(() => {
         getFileList();
     }, []);
@@ -88,10 +100,27 @@ export const DashboardView = () => {
                 <Table dataSource={fileDataSource} columns={columns}/>
             </Space>
 
-            <Modal title="Update" visible={isModalVisible} onOk={() => setIsModalVisible(false)}
-                   onCancel={() => setIsModalVisible(false)} footer={null}>
-                <UpdatePdfResultView selectedRecord={selectedFileRecord} onCloseModal={onCloseModal} />
-            </Modal>
+            {
+                isModalVisible && (
+                    <>
+                        <Modal title="Update" visible={isModalVisible} onOk={() => setIsModalVisible(false)}
+                               onCancel={() => setIsModalVisible(false)} footer={null}>
+                            <UpdatePdfResultView selectedRecord={selectedFileRecord} onCloseModal={onCloseModal} />
+                        </Modal>
+                    </>
+                )
+            }
+
+            {
+                isModalResultVisible && (
+                    <>
+                        <Modal title="Result" visible={isModalResultVisible} onOk={() => setIsModalResultVisible(false)}
+                               onCancel={() => setIsModalResultVisible(false)} footer={null}>
+                            <ResultView file_id={selectedFileRecord?.id} form={resultForm} onCloseModal={onCloseResultModal} />
+                        </Modal>
+                    </>
+                )
+            }
         </>
     );
 };
