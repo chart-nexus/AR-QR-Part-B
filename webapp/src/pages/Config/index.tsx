@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {CreateEditForm} from "./CreateEditForm";
 import axios from "axios";
 import {Configs, ConfigsResponseDto, Keywords} from "../../dto/configs.dto";
+import {EditConfigForm} from "./EditConfigForm";
 
 export const ConfigView = () => {
 
@@ -206,10 +207,7 @@ export const ConfigView = () => {
                 onCancel={() => setModalVisible({ ...modalVisible, editConfig: false})}
                 footer={null}
             >
-                {/*<Space direction={"vertical"}>*/}
-                {/*    <p>Are you sure want to delete <b>{keywordSet?.word}</b> in <b>{selectedSheet?.sheet_name}</b>?</p>*/}
-                {/*    <Button type={"default"} onClick={onDeleteKeyword}>Yes</Button>*/}
-                {/*</Space>*/}
+                <EditConfigForm selectedSheet={selectedSheet} onCloseModal={onCloseModal} />
             </Modal>
         </>
     )
