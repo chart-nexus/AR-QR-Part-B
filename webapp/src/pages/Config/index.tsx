@@ -109,7 +109,7 @@ export const ConfigView = () => {
     }
 
     const onCloseModal = () => {
-        setModalVisible({...modalVisible, create: false, edit: false, delete: false})
+        setModalVisible({...modalVisible, create: false, edit: false, delete: false, editConfig: false})
         getConfigList()
     }
 
