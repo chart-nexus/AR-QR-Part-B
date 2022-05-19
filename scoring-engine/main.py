@@ -1,4 +1,8 @@
-from sqlalchemy.orm import sessionmaker
+import os
+import sys
+
+p = os.path.abspath('..')
+sys.path.insert(1, p)
 
 from config import *
 from db import Db, Page, File
