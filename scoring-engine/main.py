@@ -10,8 +10,8 @@ from rabbitmq import RabbitConsumer
 from scoring_engine import *
 
 
-def get_session(self):
-    database = self.engine.session_local()
+def get_session(engine):
+    database = engine.session_local()
     try:
         yield database
     finally:
@@ -33,7 +33,7 @@ if __name__ == '__main__':
         print(f"processing file {data['file_path']}")
         results = scoring_engine.score_folder(folder)
 
-        session = next(get_session())
+        session = next(get_session(db))
         for result in results:
             page = session.query(Page).filter_by(file_id=file_id, page=result.page).first()
             page.score = result.score
