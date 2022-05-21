@@ -9,13 +9,20 @@ from db import Db, Page, File
 from rabbitmq import RabbitConsumer
 from scoring_engine import *
 
+
+def get_session(self):
+    database = self.engine.session_local()
+    try:
+        yield database
+    finally:
+        database.close()
+
+
 if __name__ == '__main__':
     db = Db("127.0.0.1", 3306, "root", "root", "ocr")
     rabbit = RabbitConsumer("127.0.0.1", 5672, "scoring")
-    session_maker = sessionmaker()
-    session_maker.configure(bind=db.engine)
 
-    configLoader = DbConfigLoader(db.engine)
+    configLoader = DbConfigLoader(db)
     configs = configLoader.load()
     scoring_engine = ScoringEngine(configs, PageExtractor())
 
@@ -26,7 +33,7 @@ if __name__ == '__main__':
         print(f"processing file {data['file_path']}")
         results = scoring_engine.score_folder(folder)
 
-        session = session_maker()
+        session = next(get_session())
         for result in results:
             page = session.query(Page).filter_by(file_id=file_id, page=result.page).first()
             page.score = result.score
@@ -40,10 +47,8 @@ if __name__ == '__main__':
         session.flush()
         session.commit()
         session.close()
-        ch.basic_ack(delivery_tag=method.delivery_tag) # tell queue success
+        ch.basic_ack(delivery_tag=method.delivery_tag)  # tell queue success
         print("process done")
 
+
     rabbit.set_callback(callback)
-
-
-

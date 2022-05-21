@@ -38,7 +38,7 @@ if __name__ == '__main__':
         create_dir_if_not_exists(folder)
 
         print(f"start ocr for file: {file}")
-        ocr = Ocr(file, folder, db.engine)
+        ocr = Ocr(file, folder, db)
         file = ocr.run()
         print("ocr done")
         rabbit_publisher.publish(json.dumps(file))

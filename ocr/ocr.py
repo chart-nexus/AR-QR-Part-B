@@ -25,12 +25,18 @@ class Ocr:
         self.path = path
         self.output_folder = output_folder
         self.tmp_file = "tmp.jpeg"
-        self.session_maker = sessionmaker()
-        self.session_maker.configure(bind=engine)
+        self.engine = engine
+
+    def get_session(self):
+        db = self.engine.session_local()
+        try:
+            yield db
+        finally:
+            db.close()
 
     def run(self):
         # save to file db
-        session = self.session_maker()
+        session = next(self.get_session())
         images = self.pdf_to_images()
         file = File(file_path=self.path, folder_location=self.output_folder, page=len(images))
         session.add(file)

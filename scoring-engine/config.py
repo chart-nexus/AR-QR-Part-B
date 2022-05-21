@@ -1,7 +1,5 @@
 import json
 
-from sqlalchemy.orm import sessionmaker
-
 import db.entity
 
 
@@ -20,11 +18,17 @@ class Config:
 
 class DbConfigLoader:
     def __init__(self, engine):
-        self.session_maker = sessionmaker()
-        self.session_maker.configure(bind=engine)
+        self.engine = engine
+
+    def get_session(self):
+        database = self.engine.session_local()
+        try:
+            yield database
+        finally:
+            database.close()
 
     def load(self):
-        session = self.session_maker()
+        session = next(self.get_session())
         configs = {}
 
         file_list = session.query(db.entity.Config).all()
