@@ -14,7 +14,11 @@ export const ResultView = ({file_id, form, onCloseModal}: PropsType) => {
     const [resultToShow, setResultToShow] = useState<ResultResponseDto>();
 
     const getResult = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/files/${file_id}/pages`)
+        axios.get(`${process.env.REACT_APP_API_URL}/files/${file_id}/pages`,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then((res) => {
                 setResultToShow(res.data)
             })
