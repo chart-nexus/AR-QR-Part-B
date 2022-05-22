@@ -10,15 +10,19 @@ from rabbitmq import RabbitProvider
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-file', required=True, type=str)
+    parser.add_argument('-folder', required=True, type=str)
 
     args = parser.parse_args()
+    folder = args.folder
 
-    if not os.path.isfile(args.file):
+    if not os.path.isdir(folder):
         print("args is not file")
         exit(0)
 
     rabbit_publisher = RabbitProvider("localhost", 5672, "ocr")
-    data = {"file": "/Users/yinchuangsum/ocr/3.pdf"}
+    for file in os.listdir(folder):
+        f = os.path.join(folder, file)
 
-    rabbit_publisher.publish(json.dumps(data))
+
+        data = {"file": f}
+        rabbit_publisher.publish(json.dumps(data))
