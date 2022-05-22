@@ -8,9 +8,9 @@ sys.path.insert(1, p)
 
 from rabbitmq import RabbitProvider
 
-def publish_folder(publisher, dir):
-    for f in os.listdir(dir):
-        file = os.path.join(dir, f)
+def publish_folder(publisher, path):
+    for f in os.listdir(path):
+        file = os.path.join(path, f)
         if os.path.isdir(file):
             publish_folder(publisher, file)
         elif file.endswith(".pdf"):
