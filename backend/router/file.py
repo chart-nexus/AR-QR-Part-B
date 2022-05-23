@@ -39,6 +39,7 @@ async def get_success_pages(file_id: int, db: Session = Depends(get_db)):
         result.append(PageSheetNamePatch(sheet_name=config.sheet_name, page_list=[page.page for page in pages]))
     return result
 
+
 @router.post("/{file_id}/score")
 def process(file_id: int, db: Session = Depends(get_db)):
     config_loader = DbConfigLoader(database)
