@@ -4,8 +4,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette.responses import FileResponse
 
-from backend.db import get_db, crud
+from backend.db import get_db, crud, database
 from backend.model import File, PageSheetNamePatch, Page
+from scoring.config import DbConfigLoader
+from scoring.scoring_engine import ScoringEngine, PageExtractor
 
 router = APIRouter(
     prefix="/files"
@@ -36,3 +38,13 @@ async def get_success_pages(file_id: int, db: Session = Depends(get_db)):
         pages = crud.get_pages_by_config(db, file_id, config.sheet_name)
         result.append(PageSheetNamePatch(sheet_name=config.sheet_name, page_list=[page.page for page in pages]))
     return result
+
+
+@router.post("/{file_id}/score")
+def process(file_id: int, db: Session = Depends(get_db)):
+    config_loader = DbConfigLoader(database)
+    configs = config_loader.load()
+    scoring_engine = ScoringEngine(configs, PageExtractor())
+    file = crud.get_file(db, file_id)
+    results = scoring_engine.score_folder(file.folder_location)
+    crud.score_page(db, file_id, results)

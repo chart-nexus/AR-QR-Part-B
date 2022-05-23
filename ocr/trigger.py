@@ -8,17 +8,25 @@ sys.path.insert(1, p)
 
 from rabbitmq import RabbitProvider
 
+def publish_folder(publisher, path):
+    for f in os.listdir(path):
+        file = os.path.join(path, f)
+        if os.path.isdir(file):
+            publish_folder(publisher, file)
+        elif file.endswith(".pdf"):
+            data = {"file": file}
+            publisher.publish(json.dumps(data))
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-file', required=True, type=str)
+    parser.add_argument('-folder', required=True, type=str)
 
     args = parser.parse_args()
+    folder = args.folder
 
-    if not os.path.isfile(args.file):
+    if not os.path.isdir(folder):
         print("args is not file")
         exit(0)
 
     rabbit_publisher = RabbitProvider("localhost", 5672, "ocr")
-    data = {"file": "/Users/yinchuangsum/ocr/3.pdf"}
-
-    rabbit_publisher.publish(json.dumps(data))
+    publish_folder(rabbit_publisher, folder)
