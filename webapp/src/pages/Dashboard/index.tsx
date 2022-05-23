@@ -75,7 +75,7 @@ export const DashboardView = () => {
                                 setSelectedFileRecord(record);
                                 setIsModalResultVisible(true)
                             }}>Result</Button>
-                            <Button type="link" onClick={() => onRetest(record.id)}>Result</Button>
+                            <Button type="link" onClick={() => onRetest(record.id)}>Rerun Scoring Engine</Button>
                         </Space>
                     </>
                 )
