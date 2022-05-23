@@ -12,8 +12,10 @@ export const DashboardView = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalResultVisible, setIsModalResultVisible] = useState(false);
     const [selectedFileRecord, setSelectedFileRecord] = useState<File>();
+    const [loading, setLoading] = useState(false);
 
     const onRetest = (fileId: number) => {
+        setLoading(true);
         axios.post(`${process.env.REACT_APP_API_URL}/files/${fileId}/score`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -31,6 +33,9 @@ export const DashboardView = () => {
                     message: 'Error',
                     description: error?.response?.data?.detail ?? "Something went wrong",
                 });
+            })
+            .finally(() => {
+                setLoading(false);
             })
     }
 
@@ -143,6 +148,10 @@ export const DashboardView = () => {
                     </>
                 )
             }
+
+            <Modal title="Running" visible={loading}>
+                <p>Running Scoring Engine, please wait</p>
+            </Modal>
         </>
     );
 };
