@@ -13,6 +13,27 @@ export const DashboardView = () => {
     const [isModalResultVisible, setIsModalResultVisible] = useState(false);
     const [selectedFileRecord, setSelectedFileRecord] = useState<File>();
 
+    const onRetest = (fileId: number) => {
+        axios.post(`${process.env.REACT_APP_API_URL}/files/${fileId}/score`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+            .then((res) => {
+                notification["success"]({
+                    message: 'Success',
+                    description: "Operation Success",
+                });
+                getFileList();
+            })
+            .catch((error) => {
+                notification["error"]({
+                    message: 'Error',
+                    description: error?.response?.data?.detail ?? "Something went wrong",
+                });
+            })
+    }
+
     const columns = [
         {
             title: 'Id',
@@ -54,6 +75,7 @@ export const DashboardView = () => {
                                 setSelectedFileRecord(record);
                                 setIsModalResultVisible(true)
                             }}>Result</Button>
+                            <Button type="link" onClick={() => onRetest(record.id)}>Result</Button>
                         </Space>
                     </>
                 )
